@@ -2,7 +2,7 @@ import { ToDoItem } from "./modules/ToDoItem.js";
 
 const form = document.querySelector("form");
 const list = document.querySelector("#list");
-
+const submitBtn = document.querySelector("form button[type='submit']");
 const saveItems = () => {
   //Stockage des données
   const jsonItems = JSON.stringify(items);
@@ -20,7 +20,7 @@ const getItems = () => {
 };
 const handleDelete = (item) => {
   const index = items.findIndex((el) => el.id == item.id);
-  //On retire 1 élément du tableau à paertir de l'index
+  //On retire 1 élément du tableau à partir de l'index
   items.splice(index, 1);
   // items = items.filter((el) => el.id != item.id);
   saveItems();
@@ -45,20 +45,65 @@ const handleSubmit = (event) => {
     alert("Un titre est requis !");
     return;
   }
-  //On crée une instance de la classe ToDoItem, qui nous permettra de réutiliser le code de génération du HTML
-  const item = new ToDoItem(data.title, data.desc, data.urgent);
-  list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
-  /* 
-    OU AVEC UN ELEMENT
-    list.insertAdjacentElement(
-    item.urgent ? "afterbegin" : "beforeend",
-    item.element
-  ); */
-  items.push(item);
-  console.log(items);
-  item.registerEvents(handleDelete);
-  saveItems();
-  form.reset();
+  submitBtn.innerText = "Envoi...";
+  submitBtn.disabled = true;
+  fetch("https://crudcrud.com/api/9dbb7c1461d3456b835eb0848e8d2c76/todos", {
+    method: "POST",
+    body: JSON.stringify({
+      title: data.title,
+      description: data.desc,
+      urgent: !!data.urgent,
+    }),
+    headers: new Headers({
+      "Content-Type": "application/json",
+      accept: "application/json",
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      const item = new ToDoItem(
+        data.title,
+        data.description,
+        data.urgent,
+        data._id
+      );
+      list.insertAdjacentHTML(
+        item.urgent ? "afterbegin" : "beforeend",
+        item.html
+      );
+      items.push(item);
+      item.registerEvents(handleDelete);
+      form.reset();
+      submitBtn.innerText = "Valider";
+      submitBtn.disabled = false;
+    })
+    .catch((error) => {
+      submitBtn.innerText = "Valider";
+      submitBtn.disabled = false;
+      alert("Une erreur s'est produite");
+      console.log(error);
+    });
 };
 
+/* const promise = fetch("https://fakestoreapi.com/products", {
+  method: "GET",
+  headers: new Headers(),
+  mode: "cors",
+});
+console.log(promise);
+promise
+  .then((response) => {
+    console.log(response);
+    const json = response.json();
+    console.log(json);
+    return json;
+  })
+  .then((json) => {
+    console.log(json);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+ */
 form.addEventListener("submit", handleSubmit);
