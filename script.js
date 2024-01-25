@@ -1,7 +1,13 @@
 import { ToDoItem } from "./modules/ToDoItem.js";
+import { ToDoList } from "./modules/ToDoList.js";
 
 const form = document.querySelector("form");
 const list = document.querySelector("#list");
+const toDoList = new ToDoList("todos");
+toDoList.items.forEach((item) => {
+  list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
+  item.registerEvents(toDoList.removeItem.bind(toDoList));
+});
 
 const handleSubmit = (event) => {
   //On bloque le comportement par défaut de l'évènement
@@ -18,18 +24,16 @@ const handleSubmit = (event) => {
   }
   //On crée une instance de la classe ToDoItem, qui nous permettra de réutiliser le code de génération du HTML
   const item = new ToDoItem(data.title, data.desc, data.urgent);
-  // list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
-  list.insertAdjacentElement(
+  toDoList.addItem(item);
+  list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
+  /* 
+    OU AVEC UN ELEMENT
+    list.insertAdjacentElement(
     item.urgent ? "afterbegin" : "beforeend",
     item.element
-  );
-  item.registerEvents();
-  /*
-   */
-  /** Ajout des évènements de suppression
-   * Au click du btn supprimer, on retire l'item du DOM
-   */
-
+  ); */
+  item.registerEvents(toDoList.removeItem.bind(toDoList));
+  //saveItems();
   form.reset();
 };
 
