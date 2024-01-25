@@ -30,7 +30,6 @@ export class ToDoItem {
   }
 
   registerEvents(onDelete = (item) => {}) {
-    console.log(onDelete);
     const element = document.querySelector(`#item-${this.id} button`);
     element.addEventListener("click", (e) => this.delete(e, onDelete));
   }
