@@ -4,11 +4,10 @@ export class ToDoList {
   constructor(key) {
     this.key = key;
     this.items = [];
-    this.init(key);
+    this.init();
   }
-  init(key) {
-    this.key = key;
-    const items = localStorage.getItem(key);
+  init() {
+    const items = localStorage.getItem(this.key);
     if (items) {
       this.items = JSON.parse(items).map(
         (item) =>

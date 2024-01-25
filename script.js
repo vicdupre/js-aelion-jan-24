@@ -3,6 +3,7 @@ import { ToDoList } from "./modules/ToDoList.js";
 
 const form = document.querySelector("form");
 const list = document.querySelector("#list");
+
 const toDoList = new ToDoList("todos");
 toDoList.items.forEach((item) => {
   list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
