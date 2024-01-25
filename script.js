@@ -18,11 +18,14 @@ const handleSubmit = (event) => {
   }
   //On crée une instance de la classe ToDoItem, qui nous permettra de réutiliser le code de génération du HTML
   const item = new ToDoItem(data.title, data.desc, data.urgent);
-  if (item.urgent) {
-    list.innerHTML = item.html + list.innerHTML;
-  } else {
-    list.innerHTML += item.html;
-  }
+  // list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
+  list.insertAdjacentElement(
+    item.urgent ? "afterbegin" : "beforeend",
+    item.element
+  );
+  item.registerEvents();
+  /*
+   */
   /** Ajout des évènements de suppression
    * Au click du btn supprimer, on retire l'item du DOM
    */

@@ -6,6 +6,17 @@ export class ToDoItem {
     this.id = Date.now();
   }
 
+  get element() {
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    li.id = `item-${this.id}`;
+    li.innerText = `${this.title} - ${this.description}`;
+    button.value = this.id;
+    button.innerText = "Supprimer";
+    li.appendChild(button);
+    return li;
+  }
+
   get html() {
     return `<li id="item-${this.id}">
       ${this.title} - ${this.description}
