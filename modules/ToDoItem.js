@@ -1,9 +1,9 @@
 export class ToDoItem {
-  constructor(title, description, urgent = false) {
+  constructor(title, description, urgent = false, id = Date.now()) {
     this.title = title;
     this.description = description;
     this.urgent = urgent;
-    this.id = Date.now();
+    this.id = id;
   }
 
   get element() {
@@ -24,11 +24,14 @@ export class ToDoItem {
        </li>`;
   }
 
-  registerEvents() {
-    document
-      .querySelector(`#item-${this.id} button`)
-      .addEventListener("click", (event) => {
-        document.querySelector(`#item-${event.target.value}`).remove();
-      });
+  delete(event, callback) {
+    document.querySelector(`#item-${event.target.value}`).remove();
+    callback(this);
+  }
+
+  registerEvents(onDelete = (item) => {}) {
+    console.log(onDelete);
+    const element = document.querySelector(`#item-${this.id} button`);
+    element.addEventListener("click", (e) => this.delete(e, onDelete));
   }
 }

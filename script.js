@@ -3,6 +3,35 @@ import { ToDoItem } from "./modules/ToDoItem.js";
 const form = document.querySelector("form");
 const list = document.querySelector("#list");
 
+const saveItems = () => {
+  //Stockage des données
+  const jsonItems = JSON.stringify(items);
+  console.log(jsonItems);
+  localStorage.setItem("items", jsonItems);
+};
+
+const getItems = () => {
+  //Récupération des données
+  const jsonItems = localStorage.getItem("items");
+  const items = jsonItems ? JSON.parse(jsonItems) : [];
+  return items.map(
+    (item) => new ToDoItem(item.title, item.description, item.urgent, item.id)
+  );
+};
+const handleDelete = (item) => {
+  const index = items.findIndex((el) => el.id == item.id);
+  //On retire 1 élément du tableau à paertir de l'index
+  items.splice(index, 1);
+  // items = items.filter((el) => el.id != item.id);
+  saveItems();
+};
+
+let items = getItems();
+items.forEach((item) => {
+  list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
+  item.registerEvents(handleDelete);
+});
+
 const handleSubmit = (event) => {
   //On bloque le comportement par défaut de l'évènement
   event.preventDefault();
@@ -18,18 +47,17 @@ const handleSubmit = (event) => {
   }
   //On crée une instance de la classe ToDoItem, qui nous permettra de réutiliser le code de génération du HTML
   const item = new ToDoItem(data.title, data.desc, data.urgent);
-  // list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
-  list.insertAdjacentElement(
+  list.insertAdjacentHTML(item.urgent ? "afterbegin" : "beforeend", item.html);
+  /* 
+    OU AVEC UN ELEMENT
+    list.insertAdjacentElement(
     item.urgent ? "afterbegin" : "beforeend",
     item.element
-  );
-  item.registerEvents();
-  /*
-   */
-  /** Ajout des évènements de suppression
-   * Au click du btn supprimer, on retire l'item du DOM
-   */
-
+  ); */
+  items.push(item);
+  console.log(items);
+  item.registerEvents(handleDelete);
+  saveItems();
   form.reset();
 };
 
