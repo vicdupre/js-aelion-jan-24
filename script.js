@@ -4,6 +4,7 @@ const form = document.querySelector("form");
 const list = document.querySelector("#list");
 const submitBtn = document.querySelector("form button[type='submit']");
 let items = [];
+
 const init = () => {
   list.innerText = "Chargement...";
   //Requête GET sur l'url
@@ -29,7 +30,6 @@ const init = () => {
     });
 };
 init();
-
 /**
  * Supprimer un élément de la liste et de la base de données
  *
@@ -38,6 +38,7 @@ init();
  * On pourrait donc faire handleDelete().then(() => {}).catch(() => {})
  * ou l'utiliser avec await dans une autre fonction async
  * @param {ToDoItem} item
+ *
  */
 const handleDelete = async (item) => {
   const index = items.findIndex((el) => el.id == item.id);
@@ -52,10 +53,6 @@ const handleDelete = async (item) => {
         method: "DELETE",
       }
     );
-    console.log(response);
-    //Pas de body sur cette réponse
-    //const data = await response.json();
-    //console.log(data);
     if (!response.ok) {
       throw new Error(response.statusText);
     }
